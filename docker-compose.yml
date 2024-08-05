@@ -1,0 +1,40 @@
+volumes:
+  main_db_data:
+    driver: local
+  alt_db_data:
+    driver: local
+
+services:
+  maindb:
+    image: mariadb:10.3.24-focal
+    env_file: .env
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: main_db
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_CHARACTER_SET_SERVER: "utf8mb4"
+      CHARACTER_SET_SERVER: "utf8mb4"
+    volumes:
+      - main_db_data:/var/lib/mysql
+      - ./data-main.sql:/docker-entrypoint-initdb.d/01-data-main.sql
+    ports:
+      - "3308:3306"
+  altdb:
+    image: mariadb:10.3.24-focal
+    env_file: .env
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: alt_db
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_CHARACTER_SET_SERVER: "utf8mb4"
+      CHARACTER_SET_SERVER: "utf8mb4"
+    volumes:
+      - alt_db_data:/var/lib/mysql
+      - ./data-alt.sql:/docker-entrypoint-initdb.d/01-data-alt.sql
+    ports:
+      - "3307:3306"
+
+
+
